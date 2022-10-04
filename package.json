@@ -1,12 +1,12 @@
 {
-  "name": "dolphinsr",
+  "name": "lowkey-dolphinsr",
   "version": "0.0.1",
   "description": "Spaced repetition API for JavaScript",
   "main": "dist/bundle.js",
   "module": "dist/bundle.mjs",
   "jsnext:main": "dist/rollup-starter-project.mjs",
   "repository": "https://github.com/Nilowave/dolphinsr",
-  "author": "Aaron Yodaiken",
+  "author": "Danilo Meulens",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^7.2.1",
