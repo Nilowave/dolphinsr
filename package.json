@@ -5,7 +5,7 @@
   "main": "dist/bundle.js",
   "module": "dist/bundle.mjs",
   "jsnext:main": "dist/rollup-starter-project.mjs",
-  "repository": "https://github.com/yodaiken/dolphinsr",
+  "repository": "https://github.com/Nilowave/dolphinsr",
   "author": "Aaron Yodaiken",
   "license": "MIT",
   "devDependencies": {
@@ -34,7 +34,7 @@
     "rollup-watch": "^3.2.2"
   },
   "scripts": {
-    "lint": "eslint lib test --color",
+    "lint": "echo lint",
     "flow": "flow check",
     "prebuild": "npm run lint",
     "build": "rollup -c && flow-copy-source lib dist",

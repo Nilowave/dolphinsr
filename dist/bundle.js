@@ -265,7 +265,7 @@ var toConsumableArray = function (arr) {
   }
 };
 
-var debug$1 = require('debug')('dolphin');
+var debug$1 = require("debug")("dolphin");
 
 // -- applyToLearningCardState(...)
 
@@ -275,23 +275,23 @@ var INITIAL_FACTOR = 2500;
 var INITIAL_DAYS_WITHOUT_JUMP = 4;
 var INITIAL_DAYS_WITH_JUMP = 1;
 function applyToLearningCardState(prev, ts, rating) {
-  if (rating === 'easy' || rating.match(/^easy|good$/) && prev.consecutiveCorrect > 0) {
+  if (rating === "easy" || rating.match(/^easy|good$/) && prev.consecutiveCorrect > 0) {
     return {
       master: prev.master,
       combination: prev.combination,
 
-      mode: 'reviewing',
+      mode: "reviewing",
       factor: INITIAL_FACTOR,
       lapses: 0,
       interval: prev.consecutiveCorrect > 0 ? INITIAL_DAYS_WITHOUT_JUMP : INITIAL_DAYS_WITH_JUMP,
       lastReviewed: ts
     };
-  } else if (rating === 'again') {
+  } else if (rating === "again") {
     return {
       master: prev.master,
       combination: prev.combination,
 
-      mode: 'learning',
+      mode: "learning",
       consecutiveCorrect: 0,
       lastReviewed: ts
     };
@@ -300,12 +300,12 @@ function applyToLearningCardState(prev, ts, rating) {
       master: prev.master,
       combination: prev.combination,
 
-      mode: 'learning',
+      mode: "learning",
       consecutiveCorrect: prev.consecutiveCorrect + 1,
       lastReviewed: ts
     };
   }
-  throw new Error('logic error');
+  throw new Error("logic error");
 }
 
 // -- applyToReviewingCardState(...)
@@ -316,7 +316,7 @@ var MIN_FACTOR = 0; // TODO
 var MAX_FACTOR = Number.MAX_VALUE;
 function constrainWithin(min, max, n) {
   if (min > max) {
-    throw new Error('min > max: ' + min + '=min, ' + max + '=max');
+    throw new Error("min > max: " + min + "=min, " + max + "=max");
   }
   return Math.max(Math.min(n, max), min);
 }
@@ -327,7 +327,7 @@ function calculateDaysLate(state, actual) {
   var daysLate = dateDiffInDays(actual, expected);
 
   if (daysLate < 0) {
-    debug$1('last review occured earlier than expected', {
+    debug$1("last review occured earlier than expected", {
       daysLate: daysLate,
       actual: actual,
       expected: expected
@@ -338,33 +338,35 @@ function calculateDaysLate(state, actual) {
   return daysLate;
 }
 function applyToReviewingCardState(prev, ts, rating) {
-  if (rating === 'again') {
+  if (rating === "again") {
     return {
       master: prev.master,
       combination: prev.combination,
 
-      mode: 'lapsed',
+      mode: "lapsed",
       consecutiveCorrect: 0,
-      factor: constrainWithin(MIN_FACTOR, MAX_FACTOR, prev.factor - 200),
+      factor: constrainWithin(MIN_FACTOR, MAX_FACTOR, prev.factor - 0), //200
       lapses: prev.lapses + 1,
       interval: prev.interval,
       lastReviewed: ts
     };
   }
-  var factorAdj = rating === 'hard' ? -150 : rating === 'good' ? 0 : rating === 'easy' ? 150 : NaN;
+  var factorAdj = rating === "hard" ? 0 // -150
+  : rating === "good" ? 0 : rating === "easy" ? 0 // 0
+  : NaN;
   var daysLate = calculateDaysLate(prev, ts);
 
-  var ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, rating === 'hard' ? (prev.interval + daysLate / 4) * 1.2 : rating === 'good' ? (prev.interval + daysLate / 2) * prev.factor / 1000 : rating === 'easy' ? (prev.interval + daysLate) * prev.factor / 1000 * EASY_BONUS : NaN);
+  var ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, rating === "hard" ? (prev.interval + daysLate / 4) * 1.2 : rating === "good" ? (prev.interval + daysLate / 2) * prev.factor / 1000 : rating === "easy" ? (prev.interval + daysLate) * prev.factor / 1000 * EASY_BONUS : NaN);
 
   if (isNaN(factorAdj) || isNaN(ival)) {
-    throw new Error('invalid rating: ' + rating);
+    throw new Error("invalid rating: " + rating);
   }
 
   return {
     master: prev.master,
     combination: prev.combination,
 
-    mode: 'reviewing',
+    mode: "reviewing",
     factor: constrainWithin(MIN_FACTOR, MAX_FACTOR, prev.factor + factorAdj),
     lapses: prev.lapses,
     interval: ival,
@@ -375,12 +377,12 @@ function applyToReviewingCardState(prev, ts, rating) {
 // -- applyToLapsedCardState(...)
 
 function applyToLapsedCardState(prev, ts, rating) {
-  if (rating === 'easy' || rating.match(/^easy|good$/) && prev.consecutiveCorrect > 0) {
+  if (rating === "easy" || rating.match(/^easy|good$/) && prev.consecutiveCorrect > 0) {
     return {
       master: prev.master,
       combination: prev.combination,
 
-      mode: 'reviewing',
+      mode: "reviewing",
       factor: prev.factor,
       lapses: prev.lapses,
       interval: prev.consecutiveCorrect > 0 ? INITIAL_DAYS_WITHOUT_JUMP : INITIAL_DAYS_WITH_JUMP,
@@ -391,33 +393,32 @@ function applyToLapsedCardState(prev, ts, rating) {
     master: prev.master,
     combination: prev.combination,
 
-    mode: 'lapsed',
+    mode: "lapsed",
     factor: prev.factor,
     lapses: prev.lapses,
     interval: prev.interval,
     lastReviewed: ts,
-    consecutiveCorrect: rating === 'again' ? 0 : prev.consecutiveCorrect + 1
+    consecutiveCorrect: rating === "again" ? 0 : prev.consecutiveCorrect + 1
   };
 }
 
 // -- applyReview(...)
 
-
 function applyToCardState(prev, ts, rating) {
   if (prev.lastReviewed != null && prev.lastReviewed > ts) {
     var p = prev.lastReviewed.toISOString();
     var t = ts.toISOString();
-    throw new Error('cannot apply review before current lastReviewed: ' + p + ' > ' + t);
+    throw new Error("cannot apply review before current lastReviewed: " + p + " > " + t);
   }
 
-  if (prev.mode === 'learning') {
+  if (prev.mode === "learning") {
     return applyToLearningCardState(prev, ts, rating);
-  } else if (prev.mode === 'reviewing') {
+  } else if (prev.mode === "reviewing") {
     return applyToReviewingCardState(prev, ts, rating);
-  } else if (prev.mode === 'lapsed') {
+  } else if (prev.mode === "lapsed") {
     return applyToLapsedCardState(prev, ts, rating);
   }
-  throw new Error('invalid mode: ' + prev.mode);
+  throw new Error("invalid mode: " + prev.mode);
 }
 
 function applyReview(prev, review) {
@@ -425,7 +426,7 @@ function applyReview(prev, review) {
 
   var cardState = prev.cardStates[cardId];
   if (cardState == null) {
-    throw new Error('applying review to missing card: ' + JSON.stringify(review));
+    throw new Error("applying review to missing card: " + JSON.stringify(review));
   }
 
   var state = {
