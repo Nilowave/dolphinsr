@@ -1,22 +1,33 @@
 // @flow
 
 import type {
-  State, Master, Review, Id, CardId, CardsSchedule, Card, SummaryStatistics,
-} from './types';
-import { makeEmptyState, getCardId, makeInitialCardState, generateId } from './types';
-import addReview from './addReview';
-import applyReview from './applyReview';
-import computeCardsSchedule, { pickMostDue } from './computeCardsSchedule';
+  State,
+  Master,
+  Review,
+  Id,
+  CardId,
+  CardsSchedule,
+  Card,
+  SummaryStatistics,
+} from "./types";
+import {
+  makeEmptyState,
+  getCardId,
+  makeInitialCardState,
+  generateId,
+} from "./types";
+import addReview from "./addReview";
+import applyReview from "./applyReview";
+import computeCardsSchedule, { pickMostDue } from "./computeCardsSchedule";
 
 export type { Master, Review, Id, Card, SummaryStatistics };
 export { generateId };
 
-const debug = require('debug')('dolphin');
+const debug = require("debug")("dolphin");
 
 export class DolphinSR {
-
   _state: State;
-  _masters: {[Id]: Master};
+  _masters: { [Id]: Master };
   _reviews: Array<Review>;
 
   // TODO(April 3, 2017)
@@ -27,7 +38,6 @@ export class DolphinSR {
 
   // For testing, you can swap this out with a different function to change when 'now' is.
   _currentDateGetter: () => Date;
-
 
   constructor(currentDateGetter: () => Date = () => new Date()) {
     this._state = makeEmptyState();
@@ -49,7 +59,7 @@ export class DolphinSR {
   }
 
   addMasters(...masters: Array<Master>) {
-    masters.forEach(master => this._addMaster(master));
+    masters.forEach((master) => this._addMaster(master));
     this._cachedCardsSchedule = null;
   }
 
@@ -87,13 +97,13 @@ export class DolphinSR {
   }
 
   _rebuild() {
-    debug('rebuilding state');
+    debug("rebuilding state");
     const masters = this._masters;
     const reviews = this._reviews;
     this._masters = {};
     this._reviews = [];
 
-    this.addMasters(...Object.keys(masters).map(k => masters[k]));
+    this.addMasters(...Object.keys(masters).map((k) => masters[k]));
     this.addReviews(...reviews);
   }
 
@@ -101,7 +111,10 @@ export class DolphinSR {
     if (this._cachedCardsSchedule != null) {
       return this._cachedCardsSchedule;
     }
-    this._cachedCardsSchedule = computeCardsSchedule(this._state, this._currentDateGetter());
+    this._cachedCardsSchedule = computeCardsSchedule(
+      this._state,
+      this._currentDateGetter()
+    );
     return this._cachedCardsSchedule;
   }
 
@@ -111,18 +124,23 @@ export class DolphinSR {
   }
 
   _getCard(id: CardId): Card {
-    const [masterId, combo] = id.split('#');
-    const [front, back] = combo.split('@').map(part => part.split(',').map(x => parseInt(x, 10)));
+    const [masterId, combo] = id.split("#");
+    const [front, back] = combo
+      .split("@")
+      .map((part) => part.split(",").map((x) => parseInt(x, 10)));
     const master = this._masters[masterId];
     if (master == null) {
       throw new Error(`cannot getCard: no such master: ${masterId}`);
     }
     const combination = { front, back };
 
-    const frontFields = front.map(i => master.fields[i]);
-    const backFields = back.map(i => master.fields[i]);
+    const frontFields = front.map((i) => master.fields[i]);
+    const backFields = back.map((i) => master.fields[i]);
+
+    const cardMeta = this._state.cardStates[id];
 
     return {
+      ...cardMeta,
       master: masterId,
       combination,
 

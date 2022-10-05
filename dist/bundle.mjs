@@ -431,7 +431,7 @@ function applyReview(prev, review) {
   return state;
 }
 
-var debug = require('debug')('dolphin');
+var debug = require("debug")("dolphin");
 
 var DolphinSR = function () {
 
@@ -458,12 +458,12 @@ var DolphinSR = function () {
 
 
   createClass(DolphinSR, [{
-    key: '_addMaster',
+    key: "_addMaster",
     value: function _addMaster(master) {
       var _this = this;
 
       if (this._masters[master.id]) {
-        throw new Error('master already added: ' + master.id);
+        throw new Error("master already added: " + master.id);
       }
       master.combinations.forEach(function (combination) {
         var id = getCardId({ master: master.id, combination: combination });
@@ -472,7 +472,7 @@ var DolphinSR = function () {
       this._masters[master.id] = master;
     }
   }, {
-    key: 'addMasters',
+    key: "addMasters",
     value: function addMasters() {
       var _this2 = this;
 
@@ -489,18 +489,18 @@ var DolphinSR = function () {
     // gotcha: does not apply the reviews to state or invalidate cache, that happens in addReviews()
 
   }, {
-    key: '_addReviewToReviews',
+    key: "_addReviewToReviews",
     value: function _addReviewToReviews(review) {
       this._reviews = addReview(this._reviews, review);
       var lastReview = this._reviews[this._reviews.length - 1];
 
-      return getCardId(lastReview) + '#' + lastReview.ts.toISOString() !== getCardId(review) + '#' + review.ts.toISOString();
+      return getCardId(lastReview) + "#" + lastReview.ts.toISOString() !== getCardId(review) + "#" + review.ts.toISOString();
     }
 
     // Returns true if the entire state was rebuilt (inefficient, minimize)
 
   }, {
-    key: 'addReviews',
+    key: "addReviews",
     value: function addReviews() {
       var _this3 = this;
 
@@ -528,9 +528,9 @@ var DolphinSR = function () {
       return needsRebuild;
     }
   }, {
-    key: '_rebuild',
+    key: "_rebuild",
     value: function _rebuild() {
-      debug('rebuilding state');
+      debug("rebuilding state");
       var masters = this._masters;
       var reviews = this._reviews;
       this._masters = {};
@@ -542,7 +542,7 @@ var DolphinSR = function () {
       this.addReviews.apply(this, toConsumableArray(reviews));
     }
   }, {
-    key: '_getCardsSchedule',
+    key: "_getCardsSchedule",
     value: function _getCardsSchedule() {
       if (this._cachedCardsSchedule != null) {
         return this._cachedCardsSchedule;
@@ -551,21 +551,21 @@ var DolphinSR = function () {
       return this._cachedCardsSchedule;
     }
   }, {
-    key: '_nextCardId',
+    key: "_nextCardId",
     value: function _nextCardId() {
       var s = this._getCardsSchedule();
       return pickMostDue(s, this._state);
     }
   }, {
-    key: '_getCard',
+    key: "_getCard",
     value: function _getCard(id) {
-      var _id$split = id.split('#'),
+      var _id$split = id.split("#"),
           _id$split2 = slicedToArray(_id$split, 2),
           masterId = _id$split2[0],
           combo = _id$split2[1];
 
-      var _combo$split$map = combo.split('@').map(function (part) {
-        return part.split(',').map(function (x) {
+      var _combo$split$map = combo.split("@").map(function (part) {
+        return part.split(",").map(function (x) {
           return parseInt(x, 10);
         });
       }),
@@ -575,7 +575,7 @@ var DolphinSR = function () {
 
       var master = this._masters[masterId];
       if (master == null) {
-        throw new Error('cannot getCard: no such master: ' + masterId);
+        throw new Error("cannot getCard: no such master: " + masterId);
       }
       var combination = { front: front, back: back };
 
@@ -586,16 +586,18 @@ var DolphinSR = function () {
         return master.fields[i];
       });
 
-      return {
+      var cardMeta = this._state.cardStates[id];
+
+      return _extends({}, cardMeta, {
         master: masterId,
         combination: combination,
 
         front: frontFields,
         back: backFields
-      };
+      });
     }
   }, {
-    key: 'nextCard',
+    key: "nextCard",
     value: function nextCard() {
       var cardId = this._nextCardId();
       if (cardId == null) {
@@ -604,7 +606,7 @@ var DolphinSR = function () {
       return this._getCard(cardId);
     }
   }, {
-    key: 'summary',
+    key: "summary",
     value: function summary() {
       var s = this._getCardsSchedule();
       return {
