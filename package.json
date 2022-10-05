@@ -43,7 +43,10 @@
     "test:watch": "jest --watch",
     "test": "TEST_DIST=1 jest",
     "lint:watch": "esw --color --watch --fix",
-    "prepublish": "npm test"
+    "prepublish": "npm test",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version patch && npm minor",
+    "publish:major": "npm version patch && npm major"
   },
   "dependencies": {
     "debug": "^2.6.3",
