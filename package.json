@@ -1,6 +1,6 @@
 {
   "name": "lowkey-dolphinsr",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Spaced repetition API for JavaScript",
   "main": "dist/bundle.js",
   "module": "dist/bundle.mjs",
