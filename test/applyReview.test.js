@@ -184,7 +184,7 @@ it("should accurately navigate through learning, reviewing, and lapsed modes", (
 
     lastReviewed: dates.laterToday,
     mode: "reviewing",
-    factor: 2500,
+    factor: 120,
     interval: 4,
     lapses: 0,
   });
@@ -204,7 +204,7 @@ it("should accurately navigate through learning, reviewing, and lapsed modes", (
 
     lastReviewed: stateCDue,
     mode: "reviewing",
-    factor: 2500,
+    factor: 120,
     interval: 20,
     lapses: 0,
   });
@@ -222,7 +222,7 @@ it("should accurately navigate through learning, reviewing, and lapsed modes", (
     combination,
 
     consecutiveCorrect: 0,
-    factor: 2500,
+    factor: 120,
     lapses: 1,
     interval: 20,
     lastReviewed: stateDDue,
@@ -242,7 +242,7 @@ it("should accurately navigate through learning, reviewing, and lapsed modes", (
     combination,
 
     consecutiveCorrect: 0,
-    factor: 2500,
+    factor: 120,
     lapses: 1,
     interval: 20,
     lastReviewed: eReviewDate,
@@ -262,7 +262,7 @@ it("should accurately navigate through learning, reviewing, and lapsed modes", (
 
     lastReviewed: gReviewDate,
     mode: "reviewing",
-    factor: 2500,
+    factor: 120,
     interval: 1,
     lapses: 1,
   });

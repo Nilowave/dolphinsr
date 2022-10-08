@@ -78,19 +78,19 @@ function calculateDueDate(state) {
 }
 
 function computeScheduleFromCardState(state, now) {
-  if (state.mode === 'lapsed' || state.mode === 'learning') {
-    return 'learning';
-  } else if (state.mode === 'reviewing') {
+  if (state.mode === "lapsed" || state.mode === "learning") {
+    return "learning";
+  } else if (state.mode === "reviewing") {
     var diff = dateDiffInDays(calculateDueDate(state), now);
     if (diff < 0) {
-      return 'later';
+      return "later";
     } else if (diff >= 0 && diff < 1) {
-      return 'due';
+      return "due";
     } else if (diff >= 1) {
-      return 'overdue';
+      return "overdue";
     }
   }
-  throw new Error('unreachable');
+  throw new Error("unreachable");
 }
 
 // Breaks ties first by last review (earlier beats later),
@@ -98,7 +98,7 @@ function computeScheduleFromCardState(state, now) {
 //
 // Returns null if no cards are due.
 function pickMostDue(s, state) {
-  var prec = ['learning', 'overdue', 'due'];
+  var prec = ["learning", "overdue", "due"];
   for (var i = 0; i < prec.length; i += 1) {
     var sched = prec[i];
     if (s[sched].length) {
@@ -106,19 +106,22 @@ function pickMostDue(s, state) {
         var cardA = state.cardStates[a];
         var cardB = state.cardStates[b];
         if (cardA == null) {
-          throw new Error('id not found in state: ' + a);
+          throw new Error("id not found in state: " + a);
         }
         if (cardB == null) {
-          throw new Error('id not found in state: ' + b);
+          throw new Error("id not found in state: " + b);
         }
 
         var reviewDiff = cardA.lastReviewed == null && cardB.lastReviewed != null ? 1 : cardB.lastReviewed == null && cardA.lastReviewed != null ? -1 : cardA.lastReviewed == null && cardB.lastReviewed == null ? 0 : cardB.lastReviewed - cardA.lastReviewed;
         if (reviewDiff !== 0) {
           return -reviewDiff;
         }
+        if (reviewDiff === 0) {
+          return reviewDiff;
+        }
 
         if (a === b) {
-          throw new Error('comparing duplicate id: ' + a);
+          throw new Error("comparing duplicate id: " + a);
         }
         return b > a ? 1 : -1;
       })[0];
@@ -271,7 +274,7 @@ var debug$1 = require("debug")("dolphin");
 
 // constants from Anki defaults
 // TODO(April 1, 2017) investigate rationales, consider changing them
-var INITIAL_FACTOR = 2500;
+var INITIAL_FACTOR = 130;
 var INITIAL_DAYS_WITHOUT_JUMP = 4;
 var INITIAL_DAYS_WITH_JUMP = 1;
 function applyToLearningCardState(prev, ts, rating) {
@@ -312,7 +315,7 @@ function applyToLearningCardState(prev, ts, rating) {
 
 var EASY_BONUS = 2;
 var MAX_INTERVAL = 365;
-var MIN_FACTOR = 0; // TODO
+var MIN_FACTOR = 130; // TODO
 var MAX_FACTOR = Number.MAX_VALUE;
 function constrainWithin(min, max, n) {
   if (min > max) {

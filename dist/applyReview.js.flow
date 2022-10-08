@@ -19,7 +19,7 @@ const debug = require("debug")("dolphin");
 
 // constants from Anki defaults
 // TODO(April 1, 2017) investigate rationales, consider changing them
-const INITIAL_FACTOR = 2500;
+const INITIAL_FACTOR = 130;
 const INITIAL_DAYS_WITHOUT_JUMP = 4;
 const INITIAL_DAYS_WITH_JUMP = 1;
 function applyToLearningCardState(
@@ -70,7 +70,7 @@ function applyToLearningCardState(
 
 const EASY_BONUS = 2;
 const MAX_INTERVAL = 365;
-const MIN_FACTOR = 0; // TODO
+const MIN_FACTOR = 130; // TODO
 const MAX_FACTOR = Number.MAX_VALUE;
 function constrainWithin(min, max, n) {
   if (min > max) {

@@ -38,12 +38,10 @@
     "flow": "flow check",
     "prebuild": "npm run lint",
     "build": "rollup -c && flow-copy-source lib dist",
-    "postbuild": "npm test",
     "test:dev": "jest",
     "test:watch": "jest --watch",
     "test": "TEST_DIST=1 jest",
     "lint:watch": "esw --color --watch --fix",
-    "prepublish": "npm test",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version patch && npm minor",
     "publish:major": "npm version patch && npm major"
